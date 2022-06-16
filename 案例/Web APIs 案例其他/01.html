@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <span></span>
+    <button>点击跳转至百度</button>
+    <script>
+        var span = document.querySelector("span")
+        var button = document.querySelector("button")
+        var time = 5
+        button.addEventListener('click', () => {
+            location.href = "https://www.baidu.com"
+        })
+        setInterval(() => {
+            span.innerText = `还剩下${time}秒跳转`
+            time--
+            if(time==0){
+            location.href = "https://www.baidu.com"
+            }
+        },1000)
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .box {
+            display: flex;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        .img_box {
+            position: relative;
+            width: 800px;
+            height: 450px;
+            background-color: skyblue;
+        }
+
+        .cover {
+            position: absolute;
+            background-color: rgba(0, 0, 800, .3);
+            border: 1px solid #ccc;
+            cursor: move;
+        }
+
+        .big_img_box {
+            background: url(./20191127203439.jpg) no-repeat;
+            background-position: 0 0;
+            width: 400px;
+            height: 400px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="img_box">
+            <div class="cover"></div>
+            <img src="./20191127203439.jpg" alt="">
+        </div>
+        <div class="big_img_box"></div>
+    </div>
+</body>
+<script>
+    var cover = document.querySelector(".cover")
+    var img_box = document.querySelector(".img_box")
+    var big_img = document.querySelector('.big_img_box')
+    var size_x = 0,
+        size_y = 0,
+        size_x = 0,
+        size_y = 0
+    document.addEventListener('mousedown', down)
+    document.addEventListener('mouseup', up)
+    cover.addEventListener('mousedown', box_down, false)
+    cover.addEventListener('mouseup', box_up, false)
+    cover.addEventListener('mouseover', block)
+    cover.addEventListener('mouseout', none)
+    img_box.addEventListener('mouseover', block)
+    img_box.addEventListener('mouseout', none)
+    function block(e) {
+        cover.style.display = "block"
+        big_img.style.display = "block"
+    }
+    function none(e) {
+        cover.style.display = "none"
+        big_img.style.display = "none"
+    }
+    function down(e) {
+        size_x = e.pageX
+        size_y = e.pageY
+        document.addEventListener('mousemove', move)
+    }
+    function move(e2) {
+        size_x2 = e2.pageX
+        size_y2 = e2.pageY
+        cover.style.left = `${size_x}px`
+        cover.style.top = `${size_y}px`
+        cover.style.width = `${size_x2 - size_x}px`
+        cover.style.height = `${size_y2 - size_y}px`
+    }
+    function up(e) {
+        document.removeEventListener('mousemove', move);
+    }
+    function box_down(e) {
+        e.stopPropagation()
+        cover.addEventListener('mousemove', box_move, false)
+    }
+    function box_move(e) {
+        e.stopPropagation()
+        var x = e.pageX - cover.offsetWidth / 2
+        var y = e.pageY - cover.offsetHeight / 2
+        var maxX = img_box.offsetWidth - cover.offsetWidth
+        var maxY = img_box.offsetHeight - cover.offsetHeight
+        // x=x<0?0:x>=maxX?maxX:''
+        // y=y<0?0:y>=maxY?maxY:''
+        if (x < 0) {
+            x = 0
+        } else if (x >= maxX) {
+            x = maxX
+        }
+        if (y < 0) {
+            y = 0
+        } else if (y >= maxY) {
+            y = maxY
+        }
+        cover.style.left = `${x}px`
+        cover.style.top = `${y}px`
+        var sx = x * 3840 / img_box.offsetWidth
+        var sy = y * 2160 / img_box.offsetHeight
+        big_img.style.backgroundPosition = `-${sx}px -${sy}px`
+    }
+    function box_up() {
+        cover.removeEventListener('mousemove', box_move);
+    }
+</script>
+
+</html>

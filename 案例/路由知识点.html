@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="test0426/node_modules/">
+</head>
+
+<body>
+    <div class="box">
+        <!-- router-link类似于a链接，点击后可以跳转到指定页面 -->
+        <router-link to="/user1/:id">User1</router-link>
+        <router-link to="/user2/:id">User2</router-link>
+        <router-link to="/user3/:id">User3</router-link>
+        <router-link to="/user4/:id">User4</router-link>
+        <router-link to="/login">Login</router-link>
+        <!-- 路由占位符 -->
+        <router-view></router-view>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router@3.0.0/dist/vue-router.js"></script>
+<script>
+    var User1 = {
+        template: "<div>用户：{{$route.params.id}}</div>"
+    }
+    var User2 = {
+        props: ["id"],
+        template: `<div>用户：{{id}}</div>`
+    }
+    var User3 = {
+        props: ["username", "pwd"],
+        template: "<div>用户：{{username}}---{{pwd}}</div>"
+    }
+    var User4 = {
+        props: ["username", "pwd", "id"],
+        template: "<div>用户：{{id}} -> {{username}}---{{pwd}}</div>"
+    }
+    var Login = {
+        template: `<div>This is Login</br>
+        <router-link to="/login/account">账号</router-link>
+        <router-link to="/login/phone">手机号</router-link>
+        <router-view></router-view></div>`
+    }
+    var account = {
+        template: `<div>
+        账号页面</div>`
+    }
+    var phone = {
+        template: `<div>
+        手机号页面</div>`
+    }
+    var myRouter = new VueRouter({
+        //routes是路由规则数组
+        routes: [
+            // 路由重定向：可以通过路由重定向为页面设置默认展示的组件
+            { path: "/", redirect: "/user1" },
+
+            // 动态路由匹配1
+            // 通过/:参数名  的形式传递参数
+            // $route.params.id来获取路径传参
+            { path: "/user1/:id", component: User1 },
+
+            // 动态路由匹配2
+            // 通过/:参数名  的形式传递参数
+            // props来接收参数
+            // 如果props设置为true，route.params将会被设置为组件属性
+            { path: "/user2/:id", component: User2, props: true },
+
+            // 动态路由匹配3
+            // 通过/:参数名  的形式传递参数
+            // props来接收参数
+            // props设置为对象，则直接将对象的数据传递给组件进行使用
+            {
+                path: "/user3/:id", component: User3, props: { username: "jack", pwd: 123 }
+            },
+
+            // 动态路由匹配4
+            // 通过/:参数名  的形式传递参数
+            // props来接收参数
+            // 想要 获取传递的参数值 还想要 获取传递的对象数据 ，那么props应该设置为函数形式
+            // props设置为函数，则通过函数的第一个参数获取路由对象
+            // 并可以通过路由对象的params属性获取传递的参数
+            {
+                path: "/user4/:id", component: User4, props: (route) => {
+                    return { username: "jack", pwd: 123, id: route.params.id.substr(1) }
+                }
+            },
+            // 嵌套路由
+            {
+                path: "/login",
+                component: Login,
+                children: [
+                    { path: "/login/account", component: account },
+                    { path: "/login/phone", component: phone },
+                ]
+            },
+        ]
+    })
+    new Vue({
+        el: ".box",
+        data() {
+            return {
+
+            }
+        },
+        router: myRouter,
+        components: {
+            User1: User1,
+            User2: User2,
+            User3: User3,
+            User4: User4,
+            Login: Login,
+            account: account,
+            phone: phone
+        },
+    })
+</script>
+
+</html>
